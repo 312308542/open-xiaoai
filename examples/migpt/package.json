@@ -11,12 +11,14 @@
   },
   "dependencies": {
     "@mi-gpt/engine": "1.2.1",
-    "@mi-gpt/utils": "1.1.1"
+    "@mi-gpt/utils": "1.1.1",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@mi-gpt/config": "1.1.0",
     "@neon-rs/cli": "0.1.82",
     "@types/node": "^22.13.11",
+    "@types/ws": "^8.18.1",
     "cargo-cp-artifact": "^0.1.9",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"

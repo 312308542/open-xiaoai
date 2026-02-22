@@ -31,6 +31,28 @@ async fn run_shell(script: String, timeout_millis: f64) -> String {
 }
 
 #[neon::export]
+async fn start_recording() -> String {
+    let res = RPC::instance()
+        .call_remote("start_recording", None, None)
+        .await;
+    match res {
+        Err(e) => format!("start_recording error: {}", e),
+        Ok(res) => serde_json::to_string(&res.data.unwrap_or(json!("ok"))).unwrap(),
+    }
+}
+
+#[neon::export]
+async fn stop_recording() -> String {
+    let res = RPC::instance()
+        .call_remote("stop_recording", None, None)
+        .await;
+    match res {
+        Err(e) => format!("stop_recording error: {}", e),
+        Ok(res) => serde_json::to_string(&res.data.unwrap_or(json!("ok"))).unwrap(),
+    }
+}
+
+#[neon::export]
 async fn on_output_data(bytes: Vec<u8>) -> bool {
     MessageManager::instance()
         .send_stream("play", bytes, None)

@@ -10,10 +10,13 @@ importers:
     dependencies:
       '@mi-gpt/engine':
         specifier: 1.2.1
-        version: 1.2.1
+        version: 1.2.1(ws@8.19.0)
       '@mi-gpt/utils':
         specifier: 1.1.1
         version: 1.1.1
+      ws:
+        specifier: ^8.19.0
+        version: 8.19.0
     devDependencies:
       '@mi-gpt/config':
         specifier: 1.1.0
@@ -24,6 +27,9 @@ importers:
       '@types/node':
         specifier: ^22.13.11
         version: 22.14.0
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
       cargo-cp-artifact:
         specifier: ^0.1.9
         version: 0.1.9
@@ -275,6 +281,9 @@ packages:
 
   '@types/node@22.14.0':
     resolution: {integrity: sha512-Kmpl+z84ILoG+3T/zQFyAJsU6EPTmOCj8/2+83fSN6djd6I4o7uOuGIH6vq3PrjY5BGitSbFuMN18j3iknubbA==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -564,6 +573,18 @@ packages:
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
 snapshots:
 
   '@cargo-messages/android-arm-eabi@0.1.81':
@@ -671,9 +692,9 @@ snapshots:
   '@esbuild/win32-x64@0.25.2':
     optional: true
 
-  '@mi-gpt/chat@1.1.1':
+  '@mi-gpt/chat@1.1.1(ws@8.19.0)':
     dependencies:
-      '@mi-gpt/openai': 1.1.1
+      '@mi-gpt/openai': 1.1.1(ws@8.19.0)
       '@mi-gpt/stream': 1.1.1
       '@mi-gpt/utils': 1.1.1
     transitivePeerDependencies:
@@ -684,10 +705,10 @@ snapshots:
 
   '@mi-gpt/config@1.1.0': {}
 
-  '@mi-gpt/engine@1.2.1':
+  '@mi-gpt/engine@1.2.1(ws@8.19.0)':
     dependencies:
-      '@mi-gpt/chat': 1.1.1
-      '@mi-gpt/openai': 1.1.1
+      '@mi-gpt/chat': 1.1.1(ws@8.19.0)
+      '@mi-gpt/openai': 1.1.1(ws@8.19.0)
       '@mi-gpt/stream': 1.1.1
       '@mi-gpt/utils': 1.1.1
     transitivePeerDependencies:
@@ -696,10 +717,10 @@ snapshots:
       - ws
       - zod
 
-  '@mi-gpt/openai@1.1.1':
+  '@mi-gpt/openai@1.1.1(ws@8.19.0)':
     dependencies:
       '@mi-gpt/utils': 1.1.1
-      openai: 4.93.0
+      openai: 4.93.0(ws@8.19.0)
       proxy-agent: 6.5.0
     transitivePeerDependencies:
       - encoding
@@ -740,6 +761,10 @@ snapshots:
   '@types/node@22.14.0':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 22.14.0
 
   abort-controller@3.0.0:
     dependencies:
@@ -955,7 +980,7 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  openai@4.93.0:
+  openai@4.93.0(ws@8.19.0):
     dependencies:
       '@types/node': 18.19.86
       '@types/node-fetch': 2.6.12
@@ -964,6 +989,8 @@ snapshots:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
+    optionalDependencies:
+      ws: 8.19.0
     transitivePeerDependencies:
       - encoding
 
@@ -1047,3 +1074,5 @@ snapshots:
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
+
+  ws@8.19.0: {}
