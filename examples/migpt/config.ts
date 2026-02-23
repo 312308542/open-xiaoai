@@ -19,6 +19,11 @@ export const kOpenXiaoAIConfig: OpenXiaoAIConfig = {
       url: "ws://127.0.0.1:10095",
       mode: "offline",
     },
+    qwenFlash: {
+      baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      apiKey: "",
+      model: "qwen-flash",
+    },
     maxRecordingMs: 15000,
     silenceTimeoutMs: 3000,
     promptText: "请说",

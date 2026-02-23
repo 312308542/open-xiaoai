@@ -5,6 +5,7 @@ import type { Prettify } from "@mi-gpt/utils/typing";
 import { RustServer } from "./open-xiaoai.js";
 import { OpenXiaoAISpeaker } from "./speaker.js";
 import { FunASRSession, type FunASRConfig } from "./funasr.js";
+import { tryLocalIntent } from "./intent.js";
 import { randomUUID } from "node:crypto";
 
 export interface GuanjiaConfig {
@@ -16,6 +17,12 @@ export interface GuanjiaConfig {
   silenceTimeoutMs?: number;
   /** 提示音文字，默认 "请说" */
   promptText?: string;
+  /** 阿里云百炼 Qwen Flash 意图识别配置 */
+  qwenFlash?: {
+    baseURL: string;
+    apiKey: string;
+    model: string;
+  };
 }
 
 export type OpenXiaoAIConfig = Prettify<
@@ -31,6 +38,11 @@ const kDefaultGuanjiaConfig: Required<GuanjiaConfig> = {
   maxRecordingMs: 15000,
   silenceTimeoutMs: 3000,
   promptText: "请说",
+  qwenFlash: {
+    baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    apiKey: "",
+    model: "qwen-flash",
+  },
 };
 
 class OpenXiaoAIEngine extends MiGPTEngine {
@@ -150,14 +162,23 @@ class OpenXiaoAIEngine extends MiGPTEngine {
         return;
       }
 
-      // 8. 发送给 OpenClaw 处理
-      console.log(`🏠 [OpenClaw] 发送: ${result.text}`);
-      await this.onMessage({
-        text: result.text,
-        id: randomUUID(),
-        sender: "user",
-        timestamp: Date.now(),
-      });
+      // 8. 先尝试本地意图识别（快速通道）
+      console.log(`🏠 [管家] 收到: ${result.text}`);
+      const intent = await tryLocalIntent(result.text);
+      if (intent) {
+        // 本地匹配成功，直接播报结果
+        console.log(`🏠 [快速] ${intent.reply}`);
+        await OpenXiaoAISpeaker.play({ text: intent.reply, blocking: false });
+      } else {
+        // Fallback 到 OpenClaw（流式）
+        console.log(`🏠 [OpenClaw] 发送: ${result.text}`);
+        await this.onMessage({
+          text: result.text,
+          id: randomUUID(),
+          sender: "user",
+          timestamp: Date.now(),
+        });
+      }
     } catch (err) {
       console.error("🏠 [管家模式] 错误:", err);
       this.clearTimers();

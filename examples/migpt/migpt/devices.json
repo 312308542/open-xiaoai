@@ -1,0 +1,35 @@
+{
+  "lights": {
+    "客厅灯": "light.cdn_cn_2104990441_wy0a12_s_2_light",
+    "客厅灯带": "light.cdn_cn_2104990441_wy0a12_s_2_light",
+    "主卧灯": "light.cdn_cn_2104990475_wy0a12_s_2_light",
+    "主卧灯带": "light.cdn_cn_2104990475_wy0a12_s_2_light",
+    "吊顶灯带": "light.cdn_cn_2104990475_wy0a12_s_2_light",
+    "格栅灯": "light.cdn_cn_2076684150_wy0a11_s_2_light",
+    "灯组": "light.mijia_cn_group_2024080141911592961_group3_s_2_light",
+    "筒灯组合": "light.mijia_cn_group_2024120033751736321_group3_s_2_light",
+    "西顿灯带": "light.cdn_cn_2104994952_wy0a12_s_2_light"
+  },
+  "covers": {
+    "主帘": "cover.linp_cn_2022372786_c5db_s_2_curtain",
+    "纱帘": "cover.linp_cn_2022613607_c5db_s_2_curtain",
+    "主卧窗帘": "cover.linp_cn_2022372786_c5db_s_2_curtain",
+    "主卧纱帘": "cover.linp_cn_2022613607_c5db_s_2_curtain",
+    "客厅纱帘": "cover.linp_cn_2022372099_c5db_s_2_curtain",
+    "客厅窗帘": "cover.linp_cn_2022372099_c5db_s_2_curtain",
+    "餐厅窗帘": "cover.linp_cn_2022372784_c5db_s_2_curtain"
+  },
+  "vacuums": {
+    "扫地机": "vacuum.g30_space_tan_suo_ban",
+    "扫地机器人": "vacuum.g30_space_tan_suo_ban"
+  },
+  "media_players": {
+    "电视": "media_player.tcl_75n8l_d00d_192_168_1_72",
+    "TCL电视": "media_player.tcl_75n8l_d00d_192_168_1_72",
+    "背景音乐": "media_player.hope_cn_1170737025_pad3s"
+  },
+  "aliases": {
+    "所有灯": ["light.cdn_cn_2104990441_wy0a12_s_2_light", "light.cdn_cn_2104990475_wy0a12_s_2_light", "light.cdn_cn_2076684150_wy0a11_s_2_light", "light.mijia_cn_group_2024080141911592961_group3_s_2_light"],
+    "所有窗帘": ["cover.linp_cn_2022372786_c5db_s_2_curtain", "cover.linp_cn_2022613607_c5db_s_2_curtain", "cover.linp_cn_2022372099_c5db_s_2_curtain", "cover.linp_cn_2022372784_c5db_s_2_curtain"]
+  }
+}
