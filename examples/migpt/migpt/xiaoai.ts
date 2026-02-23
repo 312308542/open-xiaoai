@@ -121,12 +121,12 @@ class OpenXiaoAIEngine extends MiGPTEngine {
         console.log(`🏠 [ASR 中间] ${partial.text}`);
       });
 
-      // 2. 开始录音（RPC 到 Client）
+      // 2. 播放提示音（blocking 等播完，避免被录进去）
+      await OpenXiaoAISpeaker.play({ text: cfg.promptText, blocking: true });
+
+      // 3. 开始录音（RPC 到 Client）
       const recRes = await RustServer.start_recording();
       console.log("🏠 [录音] 已开始:", recRes);
-
-      // 3. 播放提示音
-      await OpenXiaoAISpeaker.play({ text: cfg.promptText, blocking: false });
 
       // 4. 设置最大录音时长保护
       this._maxRecordTimer = setTimeout(() => {
