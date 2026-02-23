@@ -27,7 +27,7 @@ const kDefaultOpenXiaoAIConfig: OpenXiaoAIConfig = {
 };
 
 const kDefaultGuanjiaConfig: Required<GuanjiaConfig> = {
-  funasr: { url: "ws://127.0.0.1:10095", mode: "2pass" },
+  funasr: { url: "ws://127.0.0.1:10095", mode: "offline" },
   maxRecordingMs: 15000,
   silenceTimeoutMs: 3000,
   promptText: "请说",

@@ -17,7 +17,7 @@ export const kOpenXiaoAIConfig: OpenXiaoAIConfig = {
   guanjia: {
     funasr: {
       url: "ws://127.0.0.1:10095",
-      mode: "2pass",
+      mode: "offline",
     },
     maxRecordingMs: 15000,
     silenceTimeoutMs: 3000,
