@@ -36,7 +36,7 @@ const kDefaultOpenXiaoAIConfig: OpenXiaoAIConfig = {
 const kDefaultGuanjiaConfig: Required<GuanjiaConfig> = {
   funasr: { url: "ws://127.0.0.1:10095", mode: "offline" },
   maxRecordingMs: 15000,
-  silenceTimeoutMs: 3000,
+  silenceTimeoutMs: 2000,
   promptText: "请说",
   qwenFlash: {
     baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
@@ -102,6 +102,8 @@ class OpenXiaoAIEngine extends MiGPTEngine {
         typeof e.data === "string" ? e.data : e.data?.Keyword ?? "";
       console.log("🔥 唤醒词识别:", keyword);
       if (keyword.includes("管家") && !this._guanjiaActive) {
+        // 立即中断小爱原生链路，避免双重播报
+        OpenXiaoAISpeaker.abortXiaoAI().catch(() => {});
         this.startGuanjiaMode();
       }
     }
@@ -127,16 +129,20 @@ class OpenXiaoAIEngine extends MiGPTEngine {
     console.log("🏠 [管家模式] 启动");
 
     try {
-      // 1. 创建 FunASR 会话
+      // 1. 创建 FunASR 会话并等待连接就绪
       this._asrSession = new FunASRSession(cfg.funasr);
-      const asrPromise = this._asrSession.start((partial) => {
+      await this._asrSession.start((partial) => {
         console.log(`🏠 [ASR 中间] ${partial.text}`);
       });
+      console.log("🏠 [FunASR] 连接就绪");
 
-      // 2. 播放提示音（blocking 等播完，避免被录进去）
+      // 2. 播放提示音（blocking 等播完）
       await OpenXiaoAISpeaker.play({ text: cfg.promptText, blocking: true });
 
-      // 3. 开始录音（RPC 到 Client）
+      // 3. 等 300ms 让 TTS 声音衰减，避免被麦克风录进去
+      await new Promise((r) => setTimeout(r, 300));
+
+      // 4. 开始录音（RPC 到 Client）
       const recRes = await RustServer.start_recording();
       console.log("🏠 [录音] 已开始:", recRes);
 
@@ -150,7 +156,7 @@ class OpenXiaoAIEngine extends MiGPTEngine {
       this.resetSilenceTimer();
 
       // 6. 等待 ASR 最终结果
-      const result = await asrPromise;
+      const result = await this._asrSession.waitForResult();
       console.log(`🏠 [ASR 最终] ${result.text}`);
 
       // 7. 清理录音相关定时器

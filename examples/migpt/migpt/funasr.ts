@@ -31,6 +31,7 @@ export class FunASRSession {
   private resolveResult: ((result: FunASRResult) => void) | null = null;
   private rejectResult: ((err: Error) => void) | null = null;
   private closed = false;
+  private _resultPromise: Promise<FunASRResult> | null = null;
 
   constructor(config?: Partial<FunASRConfig>) {
     this.config = { ...DEFAULT_CONFIG, ...config };
@@ -38,36 +39,37 @@ export class FunASRSession {
 
   /**
    * 开始一次识别会话
-   * @param onPartial 可选，收到中间结果时回调（当前服务端不发中间结果）
-   * @returns Promise<FunASRResult> 最终识别结果
+   * @param onPartial 可选，收到中间结果时回调
+   * @returns Promise 等 WebSocket 就绪后 resolve（可以开始发音频了）
    */
-  start(onPartial?: (result: FunASRResult) => void): Promise<FunASRResult> {
+  start(onPartial?: (result: FunASRResult) => void): Promise<void> {
     this.closed = false;
 
-    return new Promise<FunASRResult>((resolve, reject) => {
-      this.resolveResult = resolve;
-      this.rejectResult = reject;
-
+    return new Promise<void>((readyResolve, readyReject) => {
       try {
         this.ws = new WebSocket(this.config.url);
       } catch (err) {
-        reject(new Error(`FunASR 连接失败: ${err}`));
+        readyReject(new Error(`FunASR 连接失败: ${err}`));
         return;
       }
 
+      // 结果 Promise 单独管理
+      this._resultPromise = new Promise<FunASRResult>((resolve, reject) => {
+        this.resolveResult = resolve;
+        this.rejectResult = reject;
+      });
+
       this.ws.on("open", () => {
-        // 发送开始指令
         this.ws!.send(JSON.stringify({ action: "start" }));
+        // WebSocket 就绪，可以开始发音频了
+        readyResolve();
       });
 
       this.ws.on("message", (data: Buffer) => {
         try {
           const msg = JSON.parse(data.toString());
-
-          // 忽略 status 消息
           if (msg.status === "started") return;
 
-          // 错误消息
           if (msg.error) {
             console.error(`FunASR error: ${msg.error}`);
             return;
@@ -94,7 +96,6 @@ export class FunASRSession {
       this.ws.on("close", () => {
         if (!this.closed) {
           this.closed = true;
-          // 连接关闭但没收到 final 结果
           this.resolveResult?.({ text: "", isFinal: true });
           this.resolveResult = null;
           this.rejectResult = null;
@@ -108,8 +109,17 @@ export class FunASRSession {
           this.resolveResult = null;
           this.rejectResult = null;
         }
+        // 连接阶段的错误也通知 readyReject
+        readyReject(new Error(`FunASR 连接错误: ${err.message}`));
       });
     });
+  }
+
+  /**
+   * 获取最终识别结果（在 start() 就绪后调用）
+   */
+  waitForResult(): Promise<FunASRResult> {
+    return this._resultPromise ?? Promise.resolve({ text: "", isFinal: true });
   }
 
   /**

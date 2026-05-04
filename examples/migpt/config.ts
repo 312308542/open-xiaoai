@@ -4,7 +4,7 @@ export const kOpenXiaoAIConfig: OpenXiaoAIConfig = {
   openai: {
     baseURL: "http://127.0.0.1:18789/v1",
     apiKey: "d6e58fb823c2ea8923df093f6353ea136252db5e41b9db5b",
-    model: "claude-yunyi/claude-opus-4-6",
+    model: "openclaw",
   },
   prompt: {
     system:
